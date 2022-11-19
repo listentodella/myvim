@@ -2,19 +2,17 @@
 " Vundle工具安装方法为在终端输入如下命令
 " git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/Vundle.vim
 set nocompatible              " be iMproved, required
-"filetype off                  " required
+filetype off                  " required
 set hlsearch        "高亮搜索
 set incsearch       "在输入要搜索的文字时，实时匹配
-set ignorecase      "搜索时忽略大小写
+"set ignorecase      "搜索时忽略大小写
 set smartcase       "如果搜索模式包含大写字符, 则不忽略大小写
 "set noinsearch     "在输入要搜索的文字时, 取消实时匹配
 set mouse=a                    " 在任何模式下启用鼠标
 set t_Co=256                   " 在终端启用256色
 set backspace=2                " 设置退格键可用
-set number                                            "显示行号
-filetype on                                           "启用文件类型侦测
-filetype plugin on                                    "针对不同的文件类型加载对应的插件
-filetype plugin indent on                             "启用缩进
+set nu!                                            "显示行号
+
 set smartindent                                       "启用智能对齐方式
 set expandtab                                         "将Tab键转换为空格
 set tabstop=4                                         "设置Tab键的宽度，可以更改，如：宽度为2
@@ -27,7 +25,7 @@ let mapleader = ","
 let g:indentLine_color_term = 239
 set cmdheight=1                                       "设置命令行的高度为2，默认为1
 set cursorline                                        "突出显示当前行
-hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+hi CursorLine   cterm=NONE ctermbg=white ctermfg=white guibg=darkred guifg=white
 
 set nowrap                                            "设置不自动换行
 set shortmess=atI                                     "去掉欢迎界面
@@ -48,11 +46,14 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'winManager'
+"Plugin 'winManager'
 Plugin 'Mark--Karkat'
+"Plugin 'luochen1990/rainbow'
+Plugin 'vim-scripts/minibufexplorerpp'
 Plugin 'majutsushi/tagbar' " Tag bar"
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'ronakg/quickr-cscope.vim'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'mattn/emmet-vim'
 Plugin 'scrooloose/syntastic'
@@ -64,14 +65,13 @@ Plugin 'gdbmgr'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Yggdroot/indentLine' " Indentation level"
 Plugin 'bling/vim-bufferline' " Buffer line"
-"Plugin 'kepbod/quick-scope' " Quick scope"
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'vim-scripts/taglist.vim'
 Plugin 'biskark/vim-ultimate-colorscheme-utility'
 Plugin 'rafi/awesome-vim-colorschemes'
 Plugin 'flazz/vim-colorschemes.git'
-Plugin 'LeaderF'
-let g:Lf_ReverseOrder = 1
+"Plugin 'LeaderF'
+"let g:Lf_ReverseOrder = 1
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -79,6 +79,9 @@ filetype plugin indent on    " required
 
 let g:ycm_server_python_interpreter='/usr/bin/python3'
 let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
+" 不用每次询问.ycm_extra_conf.py位置
+let g:ycm_confirm_extra_conf=0
+
 
 "set guifont=Monospace\ 14
 
@@ -110,7 +113,6 @@ set background=dark
 "<leader><leader>q    " Views all favorites"
 "
 "
-
 let g:airline_powerline_fonts = 1
 set laststatus=2  "永远显示状态栏
 "let g:airline_theme='bubblegum' "选择主题
@@ -163,34 +165,52 @@ if has("cscope")
   set csverb
 endif
 
-:set cscopequickfix=s-,c-,d-,i-,t-,e-
+"set cscopequickfix=s-,c-,d-,i-,t-,e-
 
-nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+"nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+"nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+"nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+"nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+"nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+"nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+"nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+"nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
 
 "nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 "F5 查找c符号； F6 查找字符串；   F7 查找函数定义； F8 查找函数谁调用了，
-nmap <silent> <F5> :cs find s <C-R>=expand("<cword>")<CR><CR> :botright copen<CR><CR> 
-nmap <silent> <F6> :cs find t <C-R>=expand("<cword>")<CR><CR> :botright copen<CR><CR>
+"nmap <silent> <F5> :cs find s <C-R>=expand("<cword>")<CR><CR> :botright copen<CR><CR> 
+"nmap <silent> <F6> :cs find t <C-R>=expand("<cword>")<CR><CR> :botright copen<CR><CR>
 "nmap <silent> <F7> :cs find g <C-R>=expand("<cword>")<CR><CR> 
-nmap <silent> <F7> :cs find c <C-R>=expand("<cword>")<CR><CR> :botright copen<CR><CR>
+"nmap <silent> <F7> :cs find c <C-R>=expand("<cword>")<CR><CR> :botright copen<CR><CR>
+
+nmap <silent> <F5> <plug>(quickr_cscope_symbols)
+nmap <silent> <F6> <plug>(quickr_cscope_text)
+nmap <silent> <F7> <plug>(quickr_cscope_callers)
+
+let g:quickr_cscope_keymaps = 0
+let g:quickr_cscope_use_qf_g = 1
+nmap <C-\>s  <plug>(quickr_cscope_symbols)
+nmap <C-\>g  <plug>(quickr_cscope_global)
+nmap <C-\>c  <plug>(quickr_cscope_callers)
+nmap <C-\>t  <plug>(quickr_cscope_text)
+nmap <C-\>f  <plug>(quickr_cscope_functions)
+nmap <C-\>i  <plug>(quickr_cscope_includes)
+nmap <C-\>e  <plug>(quickr_cscope_egrep)
+"nmap <C-\>f  <plug>(quickr_cscope_files)
+"nmap <C-\> <plug>(quickr_cscope_assignments)
+
 
 
  "--------------------------------------------------------------------------------
 "  自动加载ctags: ctags -R
 "if filereadable("tags")
-"      set tags=tags;
-"      set autochdir
+      set tags=tags
+      "set tags=tags;
+      "set autochdir
 "endif
-set tags=tags;
-set autochdir
+"set tags=tags;
+"set autochdir
 
 
 "  自动保存 kernel 的ctags文件
@@ -248,13 +268,10 @@ imap <c-e> <ESC>$i
 " 常规模式下输入 tb 调用插件，如果有打开 TagList 窗口则先将其关闭
 nmap tb :TlistClose<CR>:TagbarToggle<CR>
 
-let g:tagbar_width=30                       "设置窗口宽度
-" let g:tagbar_left=1                         "在左侧窗口中显示
-
 " Tagbar
 "nmap tag :TagbarToggle<CR>
 let g:tagbar_width=25
-"autocmd BufReadPost *.cpp,*.c,*.h,*.cc,*.cxx call tagbar#autoopen()
+autocmd BufReadPost *.cpp,*.c,*.h,*.cc,*.cxx call tagbar#autoopen()
 "退出VIM时自动关闭tagbar
 autocmd bufenter * if (winnr("$") == 3 && exists("b:TagbarType") &&b:TagbarType == "primary")  | qa | endif
 
@@ -270,7 +287,7 @@ let Tlist_Show_One_File=1                   "只显示当前文件的tags
 " let Tlist_Enable_Fold_Column=0              "使taglist插件不显示左边的折叠行
 let Tlist_Exit_OnlyWindow=1                 "如果Taglist窗口是最后一个窗口则退出Vim
 let Tlist_File_Fold_Auto_Close=1            "自动折叠
-let Tlist_WinWidth=30                       "设置窗口宽度
+let Tlist_WinWidth=25                       "设置窗口宽度
 let Tlist_Use_Right_Window=1                "在右侧窗口中显示
 "退出VIM时自动关闭taglist
 autocmd bufenter * if (winnr("$") == 3 && exists("b:TagListType") &&b:TagbarType == "primary")  | qa | endif
@@ -280,7 +297,6 @@ autocmd bufenter * if (winnr("$") == 3 && exists("b:TagListType") &&b:TagbarType
 " 常规模式下输入 F2 调用插件
 "
 nmap <F2> :NERDTreeToggle<CR>
-
 " NerdTree
 autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -288,8 +304,6 @@ let NERDTreeWinSize=20
 let NERDTreeShowLineNumbers=0
 "let NERDTreeAutoCenter=1
 let NERDTreeShowBookmarks=1
-
-
 " 只剩 NERDTree时自动关闭
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
@@ -309,3 +323,12 @@ hi link EasyMotionTarget2Second MatchParen
 hi link EasyMotionMoveHL Search
 hi link EasyMotionIncSearch Search
 
+"if (exists('g:rainbow_active') && g:rainbow_active)
+"    auto syntax * call rainbow#hook()
+"    auto colorscheme * call rainbow#show()
+"    " 下面这命令使rainbow在vim启动时被打开
+"    autocmd VimEnter * nested call rainbow#toggle()
+"endif
+"
+" 常规模式下用空格键来开关光标行所在折叠（注：zR 展开所有折叠，zM 关闭所有折叠）
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
